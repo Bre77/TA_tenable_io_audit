@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: splunklib
+Version: 1.0.0
+Summary: A simple library for performing splunk search automation.
+Home-page: https://github.com/IntegralDefense/splunklib
+Author: John Davison
+Author-email: unixfreak0037@gmail.com
+License: License :: OSI Approved :: Apache Software License
+Keywords: splunk
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.0
+Classifier: Programming Language :: Python :: 3.1
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Requires-Dist: pycrypto
+Requires-Dist: requests
+
+# splunklib
+A simple library for performing splunk search automation.
+
+
