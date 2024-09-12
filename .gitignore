@@ -1,4 +1,5 @@
-local/
+local
+lib/
+!lib/requirements.txt
 local.meta
-__pycache__
-*.pyc
+*.spl
