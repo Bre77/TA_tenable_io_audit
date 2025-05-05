@@ -107,7 +107,7 @@ class Input(Script):
                 if(timestamp > start):
                     end = max(end,timestamp)
                     count = count + 1
-                    if "fields" in event:
+                    if "fields" in event and event["fields"]:
                         fields = {}
                         for x in event["fields"]:
                             fields[x["key"]] = x["value"]
