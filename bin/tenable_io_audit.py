@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
-from splunklib.modularinput import *
+from splunk_input_runtime.modularinput import Argument, Event, EventWriter, Scheme, Script
 
 class Input(Script):
     MASK = "<encrypted>"
@@ -45,7 +45,6 @@ class Input(Script):
         return scheme
 
     def stream_events(self, inputs, ew):
-        self.service.namespace['app'] = self.APP
         # Get Variables
         input_name, input_items = inputs.inputs.popitem()
         kind, name = input_name.split("://")
@@ -53,27 +52,17 @@ class Input(Script):
         base = 'https://'+input_items["domain"]+'/audit-log/v1/events'
 
         # Password Encryption / Decryption
-        updates = {}
-        for item in ["access_key","secret_key"]:
-            stored_password = [x for x in self.service.storage_passwords if x.username == item and x.realm == name]
-            if input_items[item] == self.MASK:
-                if len(stored_password) != 1:
-                    ew.log(EventWriter.ERROR,f"Encrypted {item} was not found for {input_name}, reconfigure its value.")
-                    return
-                input_items[item] = stored_password[0].content.clear_password
-            else:
-                if(stored_password):
-                    ew.log(EventWriter.DEBUG,"Removing Current password")
-                    self.service.storage_passwords.delete(username=item,realm=name)
-                ew.log(EventWriter.DEBUG,"Storing password and updating Input")
-                self.service.storage_passwords.create(input_items[item],item,name)
-                updates[item] = self.MASK
-        if(updates):
-            self.service.inputs.__getitem__((name,kind)).update(**updates)
+        secrets = self.context.credentials.protect_input_fields(
+            kind=kind,
+            stanza=name,
+            values=input_items,
+            fields=("access_key", "secret_key"),
+            placeholder=self.MASK,
+        )
 
         headers = {
             'accept': 'application/json','content-type': 'application/json',
-            'x-apikeys': f"accessKey={input_items['access_key']};secretKey={input_items['secret_key']}",
+            'x-apikeys': f"accessKey={secrets['access_key']};secretKey={secrets['secret_key']}",
         }
         
         # Checkpoint
@@ -127,8 +116,7 @@ class Input(Script):
                 end = nextday
         else:
             ew.log(EventWriter.ERROR,f"Request returned status {response.status_code}, {response.text}")
-        ew.close()
-        
+
         open(checkpointfile, "w").write(str(int(end)))
 
 if __name__ == '__main__':
