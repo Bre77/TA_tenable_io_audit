@@ -8,4 +8,4 @@ python3.9 -m pip install --upgrade -t lib -r lib/requirements.txt --no-dependenc
 rm -rf lib/*/__pycache__
 rm -rf lib/*/*/__pycache__
 cd ..
-tar -cpzf $OUTPUT --exclude=.* --overwrite TA_tenable_io_audit 
+tar -cpzf $OUTPUT --exclude=.* --exclude=AGENTS.md --exclude=CLAUDE.md --overwrite TA_tenable_io_audit 
